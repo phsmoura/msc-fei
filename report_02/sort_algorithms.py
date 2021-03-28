@@ -9,33 +9,33 @@ def bubble_sort(array: list) -> list:
                 array[p+1] = aux
     return array
 
-def partition(array: list, start: int, end: int) -> int:
-    pivot = array[start]
-    x = start
+def partition(array: list, start: int, end: int, pivot: int) -> int:
+    while start <= end:
+        while array[start] < pivot:
+            start += 1
 
-    for y in range(start,end):
-        if array[y] >= pivot:
-            aux = array[x]
-            array[x] = array[y]
-            array[y] = aux
-            x += 1
-            
+        while array[end] > pivot:
+            end -= 1
 
-    aux = array[x]
-    array[x] = array[end]
-    array[end] = aux
-    return x
+        if start <= end:
+            array[start], array[end] = array[end], array[start]
+            start += 1
+            end -= 1
+    return start
 
 def quick_sort(array: list, start: int, end: int) -> list:
     if start < end:
-        partition_index = partition(array, start, end)
+        pivot = array[start]
+        partition_index = partition(array, start, end, pivot)
         quick_sort(array, start, partition_index - 1)
         quick_sort(array, partition_index, end)
     return array
 
 def randomized_quick_sort(array: list, start: int, end: int):
     if start < end:
-        partition_index = partition(array, randint(start, end), end)
+        random_position = randint(start, end-1)
+        pivot = array[random_position]
+        partition_index = partition(array, start, end, pivot)
         randomized_quick_sort(array, start, partition_index - 1)
         randomized_quick_sort(array, partition_index, end)
     return array
