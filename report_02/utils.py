@@ -33,8 +33,8 @@ def create_coodinates_latex(name: str, meassures: list) -> None:
     filename = 'report_02/coordinates.tex'
     n = len(meassures)
 
-    with open(filename,'w') as texfile:
-        texfile.write('{name}:\ncoordinates {\n')
+    with open(filename,'a') as texfile:
+        texfile.write(f'{name}:\ncoordinates {{\n')
 
         for k in range(n):
             texfile.write(f'({k+1},{meassures[k]})')
