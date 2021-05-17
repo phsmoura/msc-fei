@@ -1,6 +1,43 @@
 from random import randint
 
 
+# Global variables
+NUMBER_OF_MATRIXES = 10
+TEST_MATRIXES = {
+        0: {
+            'dimension': (3,2),
+            'matrix': []
+        },
+        1: {
+            'dimension': (2,4),
+            'matrix': []
+        },
+        2: {
+            'dimension': (4,2),
+            'matrix': []
+        },
+        3: {
+            'dimension': (2,5),
+            'matrix': []
+        }
+    }
+
+
+def generate_matrixes_dict(n):
+    matrixes = dict()
+    rows = randint(1,9)
+    cols = randint(1,9)
+
+    for k in range(n):
+        matrixes[k] = {
+            'dimension': (rows,cols),
+            'matrix': []
+        }
+        rows = cols
+        cols = randint(1,9)
+
+    return matrixes
+
 def matrix_generate(dimension: tuple):
     m = list()
     for a in range(dimension[0]):
@@ -33,26 +70,40 @@ def get_dimensions(matrixes: dict):
         d.append(matrixes[key]['dimension'][0])
     d.append(matrixes[key]['dimension'][1])
     return d
-    
-if __name__ == '__main__':
-    matrixes = {
-        0: {
-            'dimension': (3,2),
-            'matrix': []
-        },
-        1: {
-            'dimension': (2,4),
-            'matrix': []
-        },
-        2: {
-            'dimension': (4,2),
-            'matrix': []
-        },
-        3: {
-            'dimension': (2,5),
-            'matrix': []
-        }
+
+def matrix_multiplication_chain(s, m, diagonals, dimensions):
+    """
+    m[i][j] = min(m[i][k] + m[k+1][j] + d[i] * d[k+1] * d[j+1]) 
+    i <= k < j
+    """
+    if m[0][-1] != 0:
+        return
+
+    coord = diagonals[0]
+    diagonals.pop(0)
+
+    row = coord[0]  
+    col = coord[1]
+
+    aux = {
+        'values': [],
+        'k': []
     }
+
+    for k in range(row,col):
+        d = dimensions[row] * dimensions[k+1] * dimensions[col+1]
+        aux['values'].append(m[row][k] + m[k+1][col] + d)
+        aux['k'].append(k + 1)
+
+    lower_value = min(aux['values'])
+    s[row][col] = aux['k'][aux['values'].index(lower_value)]
+    m[row][col] = lower_value
+
+    matrix_multiplication_chain(s, m, diagonals, dimensions)
+
+def main():
+    matrixes = generate_matrixes_dict(NUMBER_OF_MATRIXES)
+    # matrixes = TEST_MATRIXES
 
     for key in matrixes.keys():
         matrixes[key]['matrix'] = matrix_generate(matrixes[key]['dimension'])
@@ -64,32 +115,12 @@ if __name__ == '__main__':
     diagonals = get_diagonals(n)
     dimensions = get_dimensions(matrixes)
 
-    # m[i][j] = min(m[i][k] + m[k+1][j] + d[i-1] * d[k] * d[j]) 
-    # i <= k < j
+    matrix_multiplication_chain(s, m, diagonals, dimensions)
+    print_matrix(s)
+    print()
+    print_matrix(m)
 
-    aux = {
-        'values': [],
-        'k': []
-    }
-
-    for coord in diagonals:
-        row = coord[0] 
-        col = coord[1]
+    print(f"\nMinimun cost is {m[0][-1]}")
         
-        for k in range(row,col):
-            d = dimensions[row] * dimensions[k+1] * dimensions[col+1]
-            aux['values'].append(m[row][k] + m[k+1][col] + d)
-            aux['k'].append(k + 1)
-
-        lower_value = min(aux['values'])
-        s[row][col] = aux['k'][aux['values'].index(lower_value)]
-        m[row][col] = lower_value
-
-        aux['values'] = []
-        aux['k'] = []
-
-    # print_matrix(s)
-    # print_matrix(m)
-
-    print(f"Minimun cost is {m[0][-1]}")
-        
+if __name__ == '__main__':
+    main()
