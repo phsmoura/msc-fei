@@ -1,8 +1,10 @@
+from pprint import pprint
 from random import randint
+from timeit import default_timer as timer
 
 
 # Global variables
-NUMBER_OF_MATRIXES = 10
+NUMBER_OF_MATRICES = 10
 TEST_MATRIXES = {
         0: {
             'dimension': (3,2),
@@ -19,24 +21,48 @@ TEST_MATRIXES = {
         3: {
             'dimension': (2,5),
             'matrix': []
-        }
+        },
+        4: {
+            'dimension': (5,3),
+            'matrix': []
+        },
+        5: {
+            'dimension': (3,2),
+            'matrix': []
+        },
+        6: {
+            'dimension': (2,2),
+            'matrix': []
+        },
+        7: {
+            'dimension': (2,3),
+            'matrix': []
+        },
+        8: {
+            'dimension': (3,3),
+            'matrix': []
+        },
+        9: {
+            'dimension': (3,4),
+            'matrix': []
+        },
     }
+TIMER=[0]
 
-
-def generate_matrixes_dict(n):
-    matrixes = dict()
+def generate_matrices_dict(n):
+    matrices = dict()
     rows = randint(1,9)
     cols = randint(1,9)
 
     for k in range(n):
-        matrixes[k] = {
+        matrices[k] = {
             'dimension': (rows,cols),
             'matrix': []
         }
         rows = cols
         cols = randint(1,9)
 
-    return matrixes
+    return matrices
 
 def matrix_generate(dimension: tuple):
     m = list()
@@ -47,9 +73,9 @@ def matrix_generate(dimension: tuple):
         m.append(row)
     return m
 
-def print_matrix(matrix):
+def print_matrix_latex(matrix):
     for i in matrix:
-        print(i)
+        print(str(i).replace(', ',' & ').replace('[','').replace(']','') + ' \\\\')
 
 def get_diagonals(size: int):
     sum_ = 0
@@ -64,11 +90,11 @@ def get_diagonals(size: int):
         sum_ += 1
     return ordered[size:]
 
-def get_dimensions(matrixes: dict):
+def get_dimensions(matrices: dict):
     d = list()
-    for key in range(len(matrixes.keys())):
-        d.append(matrixes[key]['dimension'][0])
-    d.append(matrixes[key]['dimension'][1])
+    for key in range(len(matrices.keys())):
+        d.append(matrices[key]['dimension'][0])
+    d.append(matrices[key]['dimension'][1])
     return d
 
 def matrix_multiplication_chain(s, m, diagonals, dimensions):
@@ -76,7 +102,9 @@ def matrix_multiplication_chain(s, m, diagonals, dimensions):
     m[i][j] = min(m[i][k] + m[k+1][j] + d[i] * d[k+1] * d[j+1]) 
     i <= k < j
     """
+    start_timer = timer()
     if m[0][-1] != 0:
+        TIMER.append(timer() - start_timer + TIMER[-1])
         return
 
     coord = diagonals[0]
@@ -99,28 +127,52 @@ def matrix_multiplication_chain(s, m, diagonals, dimensions):
     s[row][col] = aux['k'][aux['values'].index(lower_value)]
     m[row][col] = lower_value
 
+    TIMER.append(timer() - start_timer + TIMER[-1])
     matrix_multiplication_chain(s, m, diagonals, dimensions)
 
+def write_file(matrices, min_cost):
+    dim = ''
+    for k in matrices:
+        dim += f"{matrices[k]['dimension'][0]}x{matrices[k]['dimension'][1]} & "
+
+    dim += str(min_cost)
+    dim += ' \\\\ \n'
+
+    with open('file.tex','a') as f:
+        f.write(dim)
+
+def write_coord_latex():
+    text = ''
+    for k in range(len(TIMER)):
+        text += f"({k+1},{TIMER[k]}) "
+
+    with open('coord.tex','w') as f:
+        f.write(text)
+
 def main():
-    matrixes = generate_matrixes_dict(NUMBER_OF_MATRIXES)
-    # matrixes = TEST_MATRIXES
+    matrices = generate_matrices_dict(NUMBER_OF_MATRICES)
+    # matrices = TEST_MATRIXES
 
-    for key in matrixes.keys():
-        matrixes[key]['matrix'] = matrix_generate(matrixes[key]['dimension'])
+    for key in matrices.keys():
+        matrices[key]['matrix'] = matrix_generate(matrices[key]['dimension'])
 
-    n = len(list(matrixes.keys()))
+    n = len(list(matrices.keys()))
     m = [[0 for i in range(n)] for j in range(n)]
     s = [[0 for i in range(n)] for j in range(n)]
 
     diagonals = get_diagonals(n)
-    dimensions = get_dimensions(matrixes)
+    dimensions = get_dimensions(matrices)
+
+    # print(f"m: {m}\ndiagonals: {diagonals}\ndimensions: {dimensions}")
 
     matrix_multiplication_chain(s, m, diagonals, dimensions)
-    print_matrix(s)
+    pprint(s)
     print()
-    print_matrix(m)
+    pprint(m)
 
-    print(f"\nMinimun cost is {m[0][-1]}")
+    # print(f"\nMinimum cost is {m[0][-1]}")
+    # write_file(matrices, m[0][-1])
+    # write_coord_latex()
         
 if __name__ == '__main__':
     main()
