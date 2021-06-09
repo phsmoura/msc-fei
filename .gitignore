@@ -1,7 +1,11 @@
 .venv
 .vscode
+.ipynb?*
 __pycache__
 
 *.png
 *.tex
+
+# especific files
 report_??/*.log
+pel218_nlp/report_01/corpus
