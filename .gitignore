@@ -8,4 +8,4 @@ __pycache__
 
 # especific files
 report_??/*.log
-pel218_nlp/report_01/*orpus
+pel218_nlp/report_01/corpus
