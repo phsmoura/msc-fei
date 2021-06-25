@@ -66,7 +66,7 @@ class FST:
 
     def q1(self):
         """handle hundred"""
-        if self.number[0] == '1' and (self.number[-1] == 0 and self.number[-2] == 0):
+        if self.number == '100':
             self.name += NUMBER_DICT['centena'][self.number]
         else:
             self.name += NUMBER_DICT['centena'][self.number[0]] + CONJ
@@ -76,7 +76,7 @@ class FST:
     def q2(self):
         """handle dozen"""
         if self.number[-self.digits] == '1':
-            self.name += NUMBER_DICT['dezena'][self.number]
+            self.name += NUMBER_DICT['dezena'][self.number[-self.digits:]]
         else:
             self.name += NUMBER_DICT['dezena'][self.number[-self.digits]] + CONJ
             self.digits -= 1
@@ -89,9 +89,6 @@ class FST:
 class WriteNumber:
     def __init__(self, number: int) -> None:
         n = str(number)
-        for k in range(len(n)-1):
-            if n[k] == '0':
-                n = n[1:]
         self.number = FST(n)
 
     def get_number_name(self) -> str:
