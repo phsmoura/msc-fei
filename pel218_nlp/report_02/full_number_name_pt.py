@@ -1,8 +1,4 @@
 
-
-from logging import setLoggerClass
-
-
 NUMBER_DICT = {
     'centena': {
         '1': 'cento',
