@@ -18,13 +18,17 @@ class WriteNumberTest(unittest.TestCase):
         n = WriteNumber(5)
         self.assertEqual(n.get_number_name(), "cinco")
 
-    def test_3_digits_special_case(self):
+    def test_3_digits_special_case_1st_digit(self):
         n = WriteNumber(127)
         self.assertEqual(n.get_number_name(), "cento e vinte e sete")
 
-    def test_3_digits_special_case_dozen(self):
+    def test_3_digits_special_case_1st_2nd_digit(self):
         n = WriteNumber(115)
         self.assertEqual(n.get_number_name(), "cento e quinze")
+
+    def test_3_digits_special_case_3rd_digit_zero(self):
+        n = WriteNumber(120)
+        self.assertEqual(n.get_number_name(), "cento e vinte")
 
     def test_100(self):
         n = WriteNumber(100)
@@ -37,3 +41,7 @@ class WriteNumberTest(unittest.TestCase):
     def test_2_digits_special_case(self):
         n = WriteNumber(13)
         self.assertEqual(n.get_number_name(), "treze")
+
+    def test_2_digits_special_case_2nd_digit_zero(self):
+        n = WriteNumber(20)
+        self.assertEqual(n.get_number_name(), "vinte")
