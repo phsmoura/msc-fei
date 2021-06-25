@@ -31,7 +31,7 @@ class WriteNumberTest(unittest.TestCase):
         self.assertEqual(n.get_number_name(), "cem")
 
     def test_10(self):
-        n = WriteNumber(100)
+        n = WriteNumber(10)
         self.assertEqual(n.get_number_name(), "dez")
 
     def test_2_digits_special_case(self):
