@@ -1,5 +1,8 @@
 
 
+from logging import setLoggerClass
+
+
 NUMBER_DICT = {
     'centena': {
         '1': 'cento',
@@ -53,7 +56,7 @@ class FST:
     def __init__(self, number: str) -> None:
         self.number = number
         self.name = ''
-        self.digits = len(self.number) 
+        self.digits = len(self.number)
         
     def q0(self):
         """identify if number is hundred, dozen or units"""
@@ -77,6 +80,10 @@ class FST:
         """handle dozen"""
         if self.number[-self.digits] == '1':
             self.name += NUMBER_DICT['dezena'][self.number[-self.digits:]]
+        elif self.number[-1] == '0':
+            self.name += NUMBER_DICT['dezena'][self.number[-self.digits]]
+            self.digits -= 1
+            self.q3()
         else:
             self.name += NUMBER_DICT['dezena'][self.number[-self.digits]] + CONJ
             self.digits -= 1
@@ -84,7 +91,10 @@ class FST:
 
     def q3(self):
         """handle unit"""
-        self.name += NUMBER_DICT['unidade'][self.number[-self.digits]]
+        if self.number[-1] == '0' and len(self.number) == 1:
+            self.name += NUMBER_DICT['unidade'][self.number[-self.digits]]
+        elif self.number[-1] != '0':
+            self.name += NUMBER_DICT['unidade'][self.number[-self.digits]]
         
 class WriteNumber:
     def __init__(self, number: int) -> None:
