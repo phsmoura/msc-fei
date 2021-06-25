@@ -12,7 +12,9 @@ class FST:
 
         if char in ascii_lowercase:
             self.new_name += char.upper()
-        
+        else:
+            self.new_name += char
+            
         self.k += 1
         self.q1()
     
