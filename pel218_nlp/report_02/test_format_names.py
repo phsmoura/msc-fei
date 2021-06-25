@@ -10,6 +10,10 @@ class FormatNameTest(unittest.TestCase):
     def test_inverse_to_title(self):
         name = FormatName('jOHN dOE')
         self.assertEqual(name.title(), "John Doe")
+    
+    def test_begin_with_uppercase(self):
+        name = FormatName('JOhn DoE')
+        self.assertEqual(name.title(), "John Doe")
 
     def test_more_tha_2_spaces(self):
         name = FormatName('jOHN dOE foO bAR')
